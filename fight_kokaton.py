@@ -164,13 +164,15 @@ def main():
     clock = pg.time.Clock()
     tmr = 0
     sc = Score()
+    beam_lst = []
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 # スペースキー押下でBeamクラスのインスタンス生成
-                beam = Beam(bird)            
+                beam = Beam(bird)  
+                beam_lst.append(beam)          
         screen.blit(bg_img, [0, 0])
 
         if bomb in boms:
@@ -184,24 +186,30 @@ def main():
                 time.sleep(1)
                 return
 
-        if bomb is not None:
-            for i,bomb in enumerate(boms):
-                if beam is not None:
-                    if beam.rct.colliderect(bomb.rct): #ビームが爆弾を打ち落としたら
-                        beam = None
-                        boms[i] = None
-                        bird.change_img(6, screen)
-                        sc.score += 1
-                        pg.display.update()
+        for i, bomb in enumerate(boms):
+            for j, beam in enumerate(beam_lst):
+                if beam is not None and beam.rct.colliderect(bomb.rct):
+                    beam_lst[j] = None
+                    beam_lst = [beam for beam in beam_lst if beam is not None] 
+                    boms[i] = None
+                    bird.change_img(6, screen)
+                    sc.score += 1
+                    pg.display.update()            
+
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
         # beam.update(screen)   
         boms = [bomb for bomb in boms if bomb is not None]
+        # beam_lst = [beam for beam in beam_lst if beam is not None]
         for bomb in boms:
             bomb.update(screen)
-        if beam is not None:
-            beam.update(screen)
+        for beam in beam_lst:
+            if beam is not None:
+                beam.update(screen)
+            #beamが画面外にでたら
+            if not check_bound(beam.rct)[0] or not check_bound(beam.rct)[1]:
+                beam_lst.remove(beam)
         sc.update(screen)
         pg.display.update()
         tmr += 1
