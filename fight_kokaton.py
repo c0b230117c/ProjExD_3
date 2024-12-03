@@ -142,6 +142,9 @@ class Bomb:
 
 
 class Score:
+    """
+    スコアに関するクラス
+    """
     def __init__(self):
         self.score = 0
         self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体",30)
@@ -150,6 +153,24 @@ class Score:
     def update(self,screen: pg.Surface):
         sc = self.fonto.render(f"スコア：{self.score}", 0, (0, 0, 255))
         screen.blit(sc, (100,600))
+
+class Explosion:
+    """
+    爆弾に関するクラス
+    """
+    def __init__(self):
+        ex_img = pg.image.load("fig/explosion.gif")
+        ex2_img = pg.transform.flip(ex_img, True, True)
+        ex_rct = ex_img.get_rect()
+        ex_rct.center = 300, 200
+        life = 5
+
+    def update(self):
+        life -= 1
+        if life >= 0:
+            print()
+
+
 
 
 
