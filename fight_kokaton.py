@@ -186,7 +186,7 @@ def main():
                 time.sleep(1)
                 return
 
-        for i, bomb in enumerate(boms):
+        for i, bomb in enumerate(boms):#for文でbomsをiとbombにして衝突判定
             for j, beam in enumerate(beam_lst):
                 if beam is not None and beam.rct.colliderect(bomb.rct):
                     beam_lst[j] = None
